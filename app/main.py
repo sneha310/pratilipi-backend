@@ -20,8 +20,8 @@ jwt = JWTManager(app)
 mongoPath = os.environ['MONGO_BASE_URL']
 portNumber = os.environ['PORT']
 
-@app.route('/api/auth/signup', methods=['POST'])
-@cross_origin()
+@app.route('/api/auth/signup', methods=['POST', 'OPTIONS])
+@cross_origin(origin='*')
 def register():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -40,8 +40,8 @@ def register():
     result = {'email' : email + ' registered'}
     return jsonify({'result' : result})
 
-@app.route('/api/total', methods=['POST'])
-@cross_origin()
+@app.route('/api/total', methods=['POST', 'OPTIONS'])
+@cross_origin(origin='*')
 def total():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -59,8 +59,8 @@ def total():
     numberone=db.curr.count_documents({"storyname":storyname})
     return jsonify({'total' : number,'curr':numberone})
 
-@app.route('/api/counting', methods=['POST'])
-@cross_origin()
+@app.route('/api/counting', methods=['POST', 'OPTIONS'])
+@cross_origin(origin='*')
 def counting():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -84,8 +84,8 @@ def currdel():
     return jsonify({'result' : "done"})
 	
 
-@app.route('/api/auth/signin', methods=['POST'])
-@cross_origin()
+@app.route('/api/auth/signin', methods=['POST', 'OPTIONS'])
+@cross_origin(origin='*')
 def login():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
