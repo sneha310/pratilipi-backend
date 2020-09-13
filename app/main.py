@@ -93,7 +93,7 @@ def currdel():
     return jsonify({'result' : "done"})
 	
 
-@app.route('/api/auth/signin', methods=['POST'])
+@app.route('/api/auth/signin', methods=['POST', 'OPTIONS'])
 def login():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -115,13 +115,6 @@ def login():
     else:
         result = jsonify({"result":"No results found"})
     return result
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
 	
 if __name__ == '__main__':
     app.run(host="0.0.0.0",threaded=True,port=portNumber or 8080)
