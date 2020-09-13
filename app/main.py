@@ -10,7 +10,7 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+cors = CORS(app, resources={r"/api/*": {"origins": "https://read-count.vercel.app"}}, supports_credentials=True)
 app.config['JWT_SECRET_KEY'] = 'secret'
 
 bcrypt = Bcrypt(app)
