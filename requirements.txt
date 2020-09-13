@@ -1,4 +1,5 @@
 gunicorn
+dnspython
 flask
 pymongo
 flask_cors
