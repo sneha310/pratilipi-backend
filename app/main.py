@@ -20,7 +20,7 @@ jwt = JWTManager(app)
 mongoPath = os.environ['MONGO_BASE_URL']
 portNumber = os.environ['PORT']
 
-@app.route('/api/auth/signup', methods=['POST', 'OPTIONS])
+@app.route('/api/auth/signup', methods=['POST', 'OPTIONS'])
 @cross_origin(origin='*')
 def register():
     client = pymongo.MongoClient(mongoPath)
