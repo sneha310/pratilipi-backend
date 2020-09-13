@@ -85,7 +85,6 @@ def currdel():
 	
 
 @app.route('/api/auth/signin', methods=['POST', 'OPTIONS'])
-@cross_origin(origin='*')
 def login():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
