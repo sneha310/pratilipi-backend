@@ -10,7 +10,7 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
 app = Flask(__name__)
-CORS(app, resources=r'/api/*')
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['JWT_SECRET_KEY'] = 'secret'
 
 bcrypt = Bcrypt(app)
@@ -93,31 +93,28 @@ def currdel():
     return jsonify({'result' : "done"})
 	
 
-@app.route('/api/auth/signin', methods=['POST', 'GET', 'OPTIONS'])
+@app.route('/api/auth/signin', methods=['POST'])
 def login():
-    if request.method == 'POST':
-    	client = pymongo.MongoClient(mongoPath)
-    	db = client.get_database('myDB')
-    	records = db.users
-    	username = request.get_json()['username']
-    	password = request.get_json()['password']
-    	result = ""
-		
-    	response = records.find_one({'username' : username})
+    client = pymongo.MongoClient(mongoPath)
+    db = client.get_database('myDB')
+    records = db.users
+    username = request.get_json()['username']
+    password = request.get_json()['password']
+    result = ""
 	
-    	if response:	
-	        if bcrypt.check_password_hash(response['password'], password):
-	            access_token = create_access_token(identity = {
-				    'username': response['username']
-	            })
-	            result = jsonify({"token":access_token})
-	        else:
-	            result = jsonify({"error":"Invalid username and password"})            
-    	else:
-	        result = jsonify({"result":"No results found"})
-    	return result
-    return 'hello'+request.method
-	
+    response = records.find_one({'username' : username})
+
+    if response:	
+        if bcrypt.check_password_hash(response['password'], password):
+            access_token = create_access_token(identity = {
+			    'username': response['username']
+            })
+            result = jsonify({"token":access_token})
+        else:
+            result = jsonify({"error":"Invalid username and password"})            
+    else:
+        result = jsonify({"result":"No results found"})
+    return result
 	
 if __name__ == '__main__':
     app.run(host="0.0.0.0",threaded=True,port=portNumber or 8080)
