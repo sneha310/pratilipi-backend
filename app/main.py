@@ -10,9 +10,7 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
 app = Flask(__name__)
-CORS(app)
 app.config['JWT_SECRET_KEY'] = 'secret'
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
@@ -20,8 +18,7 @@ jwt = JWTManager(app)
 mongoPath = os.environ['MONGO_BASE_URL']
 portNumber = os.environ['PORT']
 
-@app.route('/api/auth/signup', methods=['POST', 'OPTIONS'])
-@cross_origin(origin='*')
+@app.route('/api/auth/signup', methods=['POST'])
 def register():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -40,8 +37,7 @@ def register():
     result = {'email' : email + ' registered'}
     return jsonify({'result' : result})
 
-@app.route('/api/total', methods=['POST', 'OPTIONS'])
-@cross_origin(origin='*')
+@app.route('/api/total', methods=['POST'])
 def total():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -59,8 +55,7 @@ def total():
     numberone=db.curr.count_documents({"storyname":storyname})
     return jsonify({'total' : number,'curr':numberone})
 
-@app.route('/api/counting', methods=['POST', 'OPTIONS'])
-@cross_origin(origin='*')
+@app.route('/api/counting', methods=['POST'])
 def counting():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -71,7 +66,6 @@ def counting():
     return jsonify({'total' : number,'curr':numberone})
 
 @app.route('/api/curr', methods=['POST'])
-@cross_origin()
 def currdel():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
@@ -84,7 +78,7 @@ def currdel():
     return jsonify({'result' : "done"})
 	
 
-@app.route('/api/auth/signin', methods=['POST', 'OPTIONS'])
+@app.route('/api/auth/signin', methods=['POST'])
 def login():
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
