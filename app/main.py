@@ -18,24 +18,38 @@ jwt = JWTManager(app)
 mongoPath = os.environ['MONGO_BASE_URL']
 portNumber = os.environ['PORT']
 
-@app.route('/api/auth/signup', methods=['POST'])
-def register():
-    client = pymongo.MongoClient(mongoPath)
-    db = client.get_database('myDB')
-    records = db.users
+def _build_cors_prelight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add("Access-Control-Allow-Methods", "*")
+    return response
 
-    username = request.get_json()['username']
-    email = request.get_json()['email']
-    password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
-    created = datetime.utcnow()
-    user_id = records.insert_one({
-	'username' : username, 
-	'email' : email, 
-	'password' : password, 
-	'created' : created, 
-	})
-    result = {'email' : email + ' registered'}
-    return jsonify({'result' : result})
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.route('/api/auth/signup', methods=['POST', 'OPTIONS'])
+def register():
+    if request.method == "OPTIONS": # CORS preflight
+    	return _build_cors_prelight_response()
+    elif request.method == "POST":
+    	client = pymongo.MongoClient(mongoPath)
+    	db = client.get_database('myDB')
+    	records = db.users
+	
+    	username = request.get_json()['username']
+    	email = request.get_json()['email']
+    	password = bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
+    	created = datetime.utcnow()
+    	user_id = records.insert_one({
+		'username' : username, 
+		'email' : email, 
+		'password' : password, 
+		'created' : created, 
+		})
+    	result = {'email' : email + ' registered'}
+    	return _corsify_actual_response(jsonify({'result' : result}))
 
 @app.route('/api/total', methods=['POST'])
 def total():
