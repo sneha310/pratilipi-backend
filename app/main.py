@@ -21,7 +21,6 @@ portNumber = os.environ['PORT']
 
 def _build_cors_prelight_response():
     response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
     response.headers.add("Access-Control-Allow-Methods", "*")
     return response
@@ -95,6 +94,8 @@ def currdel():
 
 @app.route('/api/auth/signin', methods=['POST', 'OPTIONS'])
 def login():
+    if request.method == "OPTIONS": # CORS preflight
+    	return _build_cors_prelight_response()
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
     records = db.users
