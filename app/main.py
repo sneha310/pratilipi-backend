@@ -119,7 +119,7 @@ def currdel():
 @app.route('/api/auth/signin', methods=['POST', 'OPTIONS'])
 def login():
     if request.method == "OPTIONS": # CORS preflight
-    	return 'ok'
+    	return 'ok', 200
     client = pymongo.MongoClient(mongoPath)
     db = client.get_database('myDB')
     records = db.users
