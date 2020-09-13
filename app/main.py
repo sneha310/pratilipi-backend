@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request, json
 import pymongo
 from bson.objectid import ObjectId
 from datetime import datetime
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 #import ssl
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
