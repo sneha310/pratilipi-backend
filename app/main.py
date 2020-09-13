@@ -92,28 +92,30 @@ def currdel():
     return jsonify({'result' : "done"})
 	
 
-@app.route('/api/auth/signin', methods=['POST'])
+@app.route('/api/auth/signin', methods=['POST', 'GET', 'OPTIONS'])
 def login():
-    client = pymongo.MongoClient(mongoPath)
-    db = client.get_database('myDB')
-    records = db.users
-    username = request.get_json()['username']
-    password = request.get_json()['password']
-    result = ""
+    if request.method == 'POST':
+    	client = pymongo.MongoClient(mongoPath)
+    	db = client.get_database('myDB')
+    	records = db.users
+    	username = request.get_json()['username']
+    	password = request.get_json()['password']
+    	result = ""
+		
+    	response = records.find_one({'username' : username})
 	
-    response = records.find_one({'username' : username})
-
-    if response:	
-        if bcrypt.check_password_hash(response['password'], password):
-            access_token = create_access_token(identity = {
-			    'username': response['username']
-            })
-            result = jsonify({"token":access_token})
-        else:
-            result = jsonify({"error":"Invalid username and password"})            
-    else:
-        result = jsonify({"result":"No results found"})
-    return result
+    	if response:	
+	        if bcrypt.check_password_hash(response['password'], password):
+	            access_token = create_access_token(identity = {
+				    'username': response['username']
+	            })
+	            result = jsonify({"token":access_token})
+	        else:
+	            result = jsonify({"error":"Invalid username and password"})            
+    	else:
+	        result = jsonify({"result":"No results found"})
+    	return result
+    return 'hello'+request.method
 
 @app.after_request
 def after_request(response):
